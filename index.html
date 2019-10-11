@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CascadiaJS Coupon</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+</head>
+<body>
+  <h1>Coupon</h1>
+  <input type="text"></input>
+  <script>
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAXt-BNUuZn2QipQ69gYg9XCwa5_lE-U1S2HLZTIEyikJlm-kUrpVcunlxg_26wIEk3xJDsu25auoe/pub?output=csv'
+
+    const parse = async () => {
+      console.log('get')
+      const x = await Papa.parse(url, { download: true })
+      console.log(x)
+    }
+    parse()
+  </script>
+</body>
+</html>

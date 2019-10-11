@@ -6,16 +6,42 @@
 </head>
 <body>
   <h1>Coupon</h1>
-  <input type="text"></input>
+  <input id="owner" type="text"></input>
+  <div id="feedback"></div>
   <script>
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAXt-BNUuZn2QipQ69gYg9XCwa5_lE-U1S2HLZTIEyikJlm-kUrpVcunlxg_26wIEk3xJDsu25auoe/pub?output=csv'
-
-    const parse = async () => {
-      console.log('get')
-      const x = await Papa.parse(url, { download: true })
-      console.log(x)
+    const get = () => document.getElementById('owner').value
+    const ranks = new Map()
+    const step = row => {
+      row = row.data
+      ranks.set(row.OWNER, parseFloat(row.SSCORE))
     }
-    parse()
+    const feedback = str => document.getElementById('feedback').innerHTML = str
+    const complete = () => {
+      const check = () => {
+        const owner = get()
+        if (!owner) return
+        if (ranks.has(owner)) {
+          let rank = ranks.get(owner)
+          if (rank > .99) {
+            feedback('Congradulations! You are in the top 1% of contributors and eligible for a COMPLETELY FREE ticket to CascadiaJS!')
+          } else {
+            let discount = (rank - .88) * 1000
+            if (discount > 100) discount = 100
+            discount = Math.ceil(discount)
+            feedback(`Congradulations! You are eligible for a %${ discount } discount!`)
+          }
+        } else {
+          feedback(`${owner} is not in the top 10% of maintainers of npm packages.`)
+        }
+      }
+      document.getElementById('owner').addEventListener('keyup', () => {
+        check()
+      })
+      check()
+      console.log('ready')
+    }
+    Papa.parse('./maintainers.csv', { header: true, download: true, step, complete })
+    console.log('after')
   </script>
 </body>
 </html>
